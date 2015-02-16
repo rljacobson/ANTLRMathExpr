@@ -1,15 +1,25 @@
 grammar MathExpression;
 
 //Parser Rules
-expr
+term
 	:	LEAF
 	|	'(' expr ')'	//parentheses
+	;
+
+//Implicit multiplication
+factor
+	:	term
+	|	<assoc=right> term '^' factor //power
+	|	term factor //implicit multiplication.
+	;
+
+//Unary minus/plus
+expr
+	:	factor
 	|	('+' | '-') expr //unary plus/minus
-	|	<assoc=right> expr '^' expr
-	|	expr expr //implicit multiplication
-	|	expr ('/' | '*') expr //division and explicit multiplication
-	|	expr ('+' | '-') expr //addition/subtraction
-//	|	expr '&' //postfix parenthesization. 
+	|	expr ('/' | '*') expr //division and explicit multiplication 
+	|	expr ('+' | '-') expr	//addition/subtraction
+	|	expr '&' //low-precedence postfix operator
 	;
 
 //Lexer Rules
